@@ -10,12 +10,15 @@ jQuery("#comment_submit").click(function () {
 		jQuery("#log_head, #log_body").html("");
 		jQuery(".selected").each(function (i) {
 			let profileID = this.getAttribute("data-steamid");
-			(function (i, profileID) {
+			let friendName = this.querySelector(".friend_block_content").childNodes[0].nodeValue.trim();
+			let personalizedMsg = msg.replace("%s", friendName);
+
+			(function (i, profileID, personalizedMsg) {
 				setTimeout(function () {
 					jQuery
 						.post(
 							"//steamcommunity.com/comment/Profile/post/" + profileID + "/-1/",
-							{ comment: msg, count: 6, sessionid: g_sessionID },
+							{ comment: personalizedMsg, count: 6, sessionid: g_sessionID },
 							function (response) {
 								if (response.success === false) {
 									jQuery("#log_body")[0].innerHTML += "<br>" + response.error;
@@ -47,7 +50,7 @@ jQuery("#comment_submit").click(function () {
 							);
 						});
 				}, i * 6000);
-			})(i, profileID);
+			})(i, profileID, personalizedMsg);
 		});
 	} else {
 		alert(
