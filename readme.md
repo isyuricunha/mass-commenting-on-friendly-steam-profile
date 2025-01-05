@@ -1,12 +1,39 @@
-### how to use:
+# How to Use
 
-i believe you already know the basics of how to open the console or developer tools on your pc, so i will be very straightforward.
+This guide assumes you are familiar with opening the console or developer tools in your browser. Here's a straightforward method to use this script:
 
-open steam in your browser, go to the friends tab, then open the developer tools or console of your browser.
-each browser has a different way to open it, but the quickest is to right-click anywhere, click on inspect, a page will open, and you just need to click on console. after opening the console, you copy the code from the "mass script" file, paste it into the console, and a box will open for you to write what you want to post on your steam friends' profiles and below to select all, some, or none.
+## Steps:
 
-you can user `%s` on the comment to script get friendly profile name and put in the comment,  e.g my steam name is `Yuri`, and if you use `whatsup %s?` in the comment, the script will comment `whatsup Yuri?`
+1. **Navigate to Steam Friends List:**
+   - Open Steam in your web browser.
+   - Navigate to the "Friends" tab.
 
-that's it.
+2. **Open Developer Tools:**
+   - **For most browsers:**
+     - Right-click anywhere on the page.
+     - Select "Inspect" or "Inspect Element".
+     - In the new window or tab that opens, switch to the "Console" tab.
 
-don't mess it up!
+   Note: The exact method might slightly differ based on your browser.
+
+3. **Run the Script:**
+   - **Copy the Code:** Open the file named "mass script" and copy all the JavaScript code.
+   - **Paste in Console:** Paste the copied code into the browser's console and press Enter to execute it.
+
+4. **Customize Your Message:**
+   - A dialogue box will appear allowing you to:
+     - Write your message in the provided text area.
+     - Select which friends you want to send the message to (all, some, or none).
+
+5. **Using Personalized Tags:**
+   - You can use `%s` within your message to insert the friend's profile name automatically. For example:
+     - If your message is `What's up, %s?`, and your friend's name is `Yuri`, the comment posted on Yuri's profile would read:
+       ```
+       What's up, Yuri?
+       ```
+
+## Important Notes:
+- Ensure you've selected at least one friend before attempting to post comments.
+- Be cautious with what you post, as there's no undo option for comments on Steam profiles.
+
+That's all you need to know! Use this tool responsibly and enjoy mass commenting with ease.
