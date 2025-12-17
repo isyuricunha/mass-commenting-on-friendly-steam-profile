@@ -27,6 +27,25 @@ You can use it in 3 ways:
 4. Select the `extension/` folder from this repository.
 5. Open the Steam Friends page; the panel should appear automatically.
 
+## Browser support
+
+- **Console (`mass-script.js`)**
+  - Works on modern Chromium browsers (Chrome/Edge) and Firefox.
+- **Userscript (`mass-script.user.js`)**
+  - Works on Chrome/Edge via Tampermonkey.
+  - Works on Firefox via Violentmonkey (recommended).
+- **Extension (`extension/`)**
+  - The provided extension is **Manifest V3**, so it works on Chrome/Edge.
+  - Firefox support for Manifest V3 has historically been partial and version-dependent.
+    - If the extension does not load/work in your Firefox version, use the userscript.
+
+### Firefox: loading the extension (temporary)
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click "Load Temporary Add-on".
+3. Select `extension/manifest.json`.
+4. Open the Steam Friends page and verify the panel appears.
+
 # mass-commenting on friendly steam profile
 
 This is a straight-to-the-point browser console script that lets me post the same (or personalized) comment to multiple Steam friends' profiles in one go. I run it on the Steam Friends page in a web browser, it drops a small UI on the page, I type the message, select friends, and it handles the posting with proper delays.
