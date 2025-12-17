@@ -11,10 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11]
+        node-version: [24]
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: install dependencies
+        run: npm ci
 
       - name: config git user
         run: |
@@ -41,8 +50,20 @@ jobs:
       - name: echo part
         run: |
           echo "The version increment was: ${{ steps.taggerDryRun.outputs.part }}"
-      # DO MY BUILD HERE
-      # IN CASE OF FAILURE, THE STEP BELOW WILL NOT RUN.
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: test
+        run: npm test
+
+      - name: build
+        run: npm run build
+
+      - name: pack extension
+        run: |
+          rm -f extension.zip
+          zip -r extension.zip extension
 
       - name: Minor version for each merge
         id: taggerFinal
@@ -79,4 +100,6 @@ jobs:
           prerelease: false
           title: 'Last build: ${{ steps.taggerFinal.outputs.new_tag }}'
           files: |
-            *.js
+            mass-script.js
+            mass-script.user.js
+            extension.zip
