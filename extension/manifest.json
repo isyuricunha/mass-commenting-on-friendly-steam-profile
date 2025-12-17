@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "steam mass commenter",
+  "version": "0.0.0",
+  "description": "mass comment on selected steam friends",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://steamcommunity.com/*/friends*",
+        "https://steamcommunity.com/profiles/*/friends*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
