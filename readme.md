@@ -1,36 +1,31 @@
-# How to Use
+# How to use
 
-This guide assumes you are familiar with opening the console or developer tools in your browser. Here's a straightforward method to use this script:
+This project injects a small in-page panel on the Steam Friends page that lets you post the same (or personalized) profile comment to multiple selected friends.
 
-## Steps:
+You can use it in 3 ways:
 
-1. **Navigate to Steam Friends List:**
-   - Open Steam in your web browser.
-   - Navigate to the "Friends" tab.
+## 1) Console (copy/paste)
 
-2. **Open Developer Tools:**
-   - **For most browsers:**
-     - Right-click anywhere on the page.
-     - Select "Inspect" or "Inspect Element".
-     - In the new window or tab that opens, switch to the "Console" tab.
+1. Open Steam in a web browser and go to the Friends page on `steamcommunity.com`.
+2. Open DevTools → Console.
+3. Copy all contents of `mass-script.js`.
+4. Paste into the console and press Enter.
 
-   Note: The exact method might slightly differ based on your browser.
+## 2) Userscript (Tampermonkey / Violentmonkey)
 
-3. **Run the Script:**
-   - **Copy the Code:** Open the file named "mass script" and copy all the JavaScript code.
-   - **Paste in Console:** Paste the copied code into the browser's console and press Enter to execute it.
+1. Install Tampermonkey (Chrome/Edge) or Violentmonkey (Firefox).
+2. Create a new userscript.
+3. Paste the contents of `mass-script.user.js`.
+4. Save.
+5. Open the Steam Friends page; the panel should appear automatically.
 
-4. **Customize Your Message:**
-   - A dialogue box will appear allowing you to:
-     - Write your message in the provided text area.
-     - Select which friends you want to send the message to (all, some, or none).
+## 3) Extension (Chrome/Edge)
 
-5. **Using Personalized Tags:**
-   - You can use `%s` within your message to insert the friend's profile name automatically. For example:
-     - If your message is `What's up, %s?`, and your friend's name is `Yuri`, the comment posted on Yuri's profile would read:
-       ```
-       What's up, Yuri?
-       ```
+1. Go to `chrome://extensions`.
+2. Enable "Developer mode".
+3. Click "Load unpacked".
+4. Select the `extension/` folder from this repository.
+5. Open the Steam Friends page; the panel should appear automatically.
 
 # mass-commenting on friendly steam profile
 
@@ -39,21 +34,21 @@ This is a straight-to-the-point browser console script that lets me post the sam
 ## What it does
 - Posts comments to selected friends' profile comment sections from the Friends page.
 - Supports a simple personalization token `%s` that gets replaced by the friend's display name.
-- Adds a small UI right under the friends management area so I don't have to leave the page.
+- Adds a small in-page panel so I don't have to leave the page.
 - Shows progress and a per-friend log (success/fail) while it's running.
-- Waits 6 seconds between comments to play nice with rate limiting.
+- Uses a configurable delay between comments to play nice with rate limiting.
 
 ## Requirements
 - Be logged into Steam in a web browser (not the desktop client).
 - Open the Friends list page on steamcommunity.com.
-- The page needs to load Steam's own scripts (jQuery, `g_sessionID`, `ToggleManageFriends`, `CEmoticonPopup`), which are present on the Friends page.
+- The page needs a valid logged-in session (so `g_sessionID` exists).
 
 ## How it works (in short)
-- The script injects a small comment box UI after `#manage_friends`.
-- I type a message (optional `%s` for friend name) and click "Post Comments to Selected Friends".
-- It loops through `.selected` friend tiles, grabs each friend's SteamID, and posts to `//steamcommunity.com/comment/Profile/post/<steamid>/-1/` with the active `g_sessionID`.
-- It delays each request by 6 seconds per friend to avoid hammering.
-- It updates a log area with successes or errors and shows a running counter.
+- The script injects a small in-page panel.
+- I type a message (optional `%s` for friend name), select friends using Steam's selection UI, and click start.
+- It reads selected friend tiles (`.selected`), grabs each friend's SteamID, and posts to `https://steamcommunity.com/comment/Profile/post/<steamid>/-1/` with the active `g_sessionID`.
+- It delays each request to avoid hammering.
+- It updates a per-friend log plus progress counters.
 
 ## Step-by-step (my flow)
 1. Open Steam in a web browser and go to my Friends page.
@@ -63,7 +58,7 @@ This is a straight-to-the-point browser console script that lets me post the sam
 5. Use the small panel that appears:
    - Type my message in the text area.
    - Select the friends I want (Steam's selection UI). The script reads elements with the `.selected` class.
-   - Click the green "Post Comments to Selected Friends" button.
+   - Click start.
 6. Watch the log for status and progress until it's done.
 
 ## Personalizing messages with `%s`
@@ -74,7 +69,7 @@ This is a straight-to-the-point browser console script that lets me post the sam
 - If I don't use `%s`, it just posts the same text to everyone.
 
 ## Rate limiting and delays
-- It uses a fixed 6-second delay between comments.
+- The panel uses a delay value in milliseconds (default: 6000ms).
 - This is conservative to reduce the chance of temporary blocks or errors.
 - If I'm posting to a lot of friends, it will take a while. That's intentional and safer.
 
@@ -97,30 +92,44 @@ This is a straight-to-the-point browser console script that lets me post the sam
 
 ## FAQ
 - Can I change the delay?
-  - In `mass-script.js`, edit the `index * 6000` value inside `setTimeout` in `postCommentWithDelay()`.
+  - Use the delay input in the panel.
 - Does this work outside the Friends page?
   - It's designed for the Friends page where Steam exposes the right globals and markup.
 - Do I need to install anything?
-  - No. It's a copy/paste-in-console script.
+  - For console usage, no. For userscript/extension usage, install the respective tool.
+
+## Development
+
+Build and tests:
+
+```bash
+npm install
+npm run typecheck
+npm test
+npm run build
+```
+
+Artifacts:
+
+- `mass-script.js` (console)
+- `mass-script.user.js` (userscript)
+- `extension/content-script.js` (extension content script)
 
 ## Dev notes
-Main functions in `mass-script.js`:
-- `initCommentManagement()`
-  - Injects the UI after `#manage_friends`, wires the emoticon popup, and binds the submit handler.
-- `handleCommentSubmission()`
-  - Reads `.selected` friends, builds personalized messages, and queues posts.
-- `postCommentWithDelay(index, profileID, message, total)`
-  - Delays requests by `index * 6000` ms and posts using `jQuery.ajax` to Steam's endpoint with `g_sessionID`.
-- `updateLog(profileID, status)`
-  - Appends status lines with links to each profile.
-- `updateProgress(current, total)`
-  - Updates a simple processed counter.
-- `clearLog()`
-  - Clears the log area before a run.
+Main pieces:
+
+- `src/core/comment_runner.ts`
+  - Queue runner with `start/pause/resume/stop` and per-item delay.
+- `src/steam/steam_dom.ts`
+  - Extracts selected friends from the DOM.
+- `src/steam/steam_api.ts`
+  - Posts comments via `fetch` using `g_sessionID`.
+- `src/ui/panel.ts`
+  - In-page panel UI, templates (localStorage), progress/log.
 
 Assumptions:
 - jQuery is present (it is on the Steam Friends page).
-- `g_sessionID`, `ToggleManageFriends`, and `CEmoticonPopup` exist on that page.
+- `g_sessionID` exists on that page.
 
 ## Safety and responsibility
 - Don't spam people. Use this respectfully.
