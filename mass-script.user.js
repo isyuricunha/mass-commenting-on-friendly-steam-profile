@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name         steam mass commenter
+// @namespace    https://github.com/isyuricunha
+// @version      0.0.0
+// @description  mass comment on selected steam friends
+// @match        https://steamcommunity.com/*/friends*
+// @match        https://steamcommunity.com/profiles/*/friends*
+// @run-at       document-idle
+// @grant        none
+// ==/UserScript==
+
 "use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -740,8 +751,8 @@
     api.init();
   }
 
-  // src/entrypoints/console.ts
+  // src/entrypoints/userscript.ts
   init_app({
-    distribution: "console"
+    distribution: "userscript"
   });
 })();

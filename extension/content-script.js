@@ -740,8 +740,8 @@
     api.init();
   }
 
-  // src/entrypoints/console.ts
+  // src/entrypoints/extension.ts
   init_app({
-    distribution: "console"
+    distribution: "extension"
   });
 })();
